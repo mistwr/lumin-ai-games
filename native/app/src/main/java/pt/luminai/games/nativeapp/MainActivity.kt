@@ -1,6 +1,8 @@
 package pt.luminai.games.nativeapp
 
 import android.os.Bundle
+import android.net.Uri
+import android.content.Intent
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -28,8 +30,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             var tab by remember { mutableStateOf("Biblioteca") }
             var selected by remember { mutableStateOf<String?>(null) }
+            var selectedUri by remember { mutableStateOf<Uri?>(null) }
             val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-                uri?.let { selected = it.lastPathSegment ?: "ROM selecionada" }
+                uri?.let { selectedUri = it; selected = it.lastPathSegment ?: "ROM selecionada"; try { contentResolver.takePersistableUriPermission(it, Intent.FLAG_GRANT_READ_URI_PERMISSION) } catch (_: SecurityException) {} }
             }
             MaterialTheme(colorScheme = darkColorScheme(primary = Gold, background = Ink, surface = Color(0xFF211C31))) {
                 Column(Modifier.fillMaxSize().background(Ink).padding(18.dp)) {
@@ -50,6 +53,7 @@ class MainActivity : ComponentActivity() {
                             Spacer(Modifier.height(12.dp))
                             Button(onClick = { picker.launch(arrayOf("application/octet-stream", "*/*")) }) { Text("＋ Importar ROM") }
                             selected?.let { Text("Selecionado: $it", color = Gold) }
+                            selectedUri?.let { uri -> Button(onClick = { val intent = Intent(this@MainActivity, EmulatorActivity::class.java).putExtra("rom_uri", uri.toString()); startActivity(intent) }) { Text("▶ Jogar com EmulatorJS") } }
                             Spacer(Modifier.height(18.dp))
                             Text("A emulação nativa será ligada após validar a base Libretro.", color = Color.LightGray)
                         }
