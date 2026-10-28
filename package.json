@@ -1,0 +1,1 @@
+{"name":"lumin-ai-games","version":"0.2.0","private":true,"scripts":{"android:add":"cap add android","android:sync":"cap sync android"},"dependencies":{"@capacitor/core":"^7.4.0","@capacitor/android":"^7.4.0"},"devDependencies":{"@capacitor/cli":"^7.4.0"}}
