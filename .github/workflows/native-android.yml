@@ -16,9 +16,11 @@ jobs:
           distribution: temurin
           java-version: '17'
       - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
       - name: Build native debug APK
         working-directory: native
-        run: gradle assembleDebug --no-daemon
+        run: gradle assembleDebug --no-daemon --stacktrace --warning-mode all
       - uses: actions/upload-artifact@v4
         with:
           name: lumin-games-native-debug
